@@ -88,9 +88,9 @@ body::before {
 }
 
 .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
 }
@@ -110,22 +110,26 @@ h1 {
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
   text-align: center;
+  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.9));
 }
 
 .subtitle {
   text-align: center;
-  color: var(--text-muted);
+  color: #1e293b;
   font-size: 1.1rem;
   margin-bottom: 3rem;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 15px rgba(255, 255, 255, 1);
 }
 
 h2 {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 15px rgba(255, 255, 255, 1);
 }
 
 /* ───── Buttons ───── */
