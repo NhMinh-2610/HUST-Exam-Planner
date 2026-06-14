@@ -1,0 +1,90 @@
+.upload-container {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.upload-box {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-panel);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.upload-box:hover, .upload-box.drag-active {
+  border-color: var(--primary);
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-muted);
+}
+
+.upload-content.success {
+  color: var(--success);
+}
+
+.upload-content p {
+  color: var(--text-main);
+  font-size: 1.1rem;
+}
+
+.upload-content span {
+  font-size: 0.9rem;
+}
+
+.change-file {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  color: var(--primary);
+}
+
+.upload-content.success .icon {
+  color: var(--success);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--danger);
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}

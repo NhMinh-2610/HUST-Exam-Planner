@@ -1,0 +1,111 @@
+.schedule-container {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.schedule-title {
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+}
+
+.table-responsive {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.schedule-table th {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+}
+
+.schedule-table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.schedule-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.schedule-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.schedule-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.flex-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.text-secondary {
+  color: var(--secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-primary {
+  background-color: rgba(139, 92, 246, 0.2);
+  color: var(--primary);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.badge-outline {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.course-name {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.row-conflict {
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.row-conflict td {
+  border-color: rgba(239, 68, 68, 0.2);
+}
