@@ -102,8 +102,7 @@ const ClassSelector = ({ classCodes, selectedCodes, onChange }) => {
         noOptionsMessage={() => "Không tìm thấy mã lớp"}
         className="react-select-container"
         classNamePrefix="react-select"
-        menuPortalTarget={document.body}
-        menuPosition={'fixed'}
+        menuPlacement="bottom"
       />
     </div>
   );
