@@ -290,6 +290,21 @@ h2 {
   }
 
   /* Fix cho List/Table khi in */
+  .table-responsive {
+    overflow-x: visible !important;
+  }
+
+  .schedule-table {
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  .whitespace-nowrap, .course-name {
+    white-space: normal !important;
+    overflow: visible !important;
+    max-width: none !important;
+  }
+
   .schedule-table th {
     background-color: #f3f4f6 !important;
     color: #374151 !important;
