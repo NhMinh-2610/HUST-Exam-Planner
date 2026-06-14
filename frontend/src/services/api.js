@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://hust-exam-planner.onrender.com';
+const API_URL = 'https://hust-exam-planner.onrender.com/api';
 
 export const uploadPdf = async (files) => {
   const formData = new FormData();
