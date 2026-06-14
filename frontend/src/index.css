@@ -1,4 +1,4 @@
-@import url('phttps://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swa');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
   --bg-dark: #f8fafc;
@@ -55,7 +55,7 @@ body::before {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: 0.15; /* Tăng độ nét của ảnh nền */
+  opacity: 0.4; /* Tăng độ nét của ảnh nền lên rõ rệt */
   z-index: -1;
   pointer-events: none;
 }
