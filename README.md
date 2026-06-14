@@ -10,7 +10,7 @@ Thay vì phải căng mắt dò tìm mã lớp của mình trong file PDF lịch
 
 ## ✨ Tính năng nổi bật
 
-- **📄 Đọc PDF siêu tốc:** Ứng dụng tự động bóc tách dữ liệu chuẩn xác từ file PDF lịch thi do trường cung cấp (hỗ trợ xử lý trực tiếp trên server).
+- **📄 Đọc PDF:** Ứng dụng tự động bóc tách dữ liệu chuẩn xác từ file PDF lịch thi do trường cung cấp (hỗ trợ xử lý trực tiếp trên server nếu server tốt).
 - **🎯 Tự động lọc môn thi cá nhân:** Nhập mã lớp, ứng dụng sẽ tìm và chỉ hiển thị đúng lịch thi của riêng bạn.
 - **🗓️ Hiển thị trực quan (Calendar & Table View):** 
   - Xem theo dạng **Bảng** chi tiết các môn thi.
