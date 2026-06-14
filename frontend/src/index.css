@@ -230,6 +230,11 @@ h2 {
 /* ───── Print ───── */
 
 @media print {
+  @page {
+    size: landscape;
+    margin: 1cm;
+  }
+
   body {
     background: white !important;
     color: black !important;
@@ -247,7 +252,8 @@ h2 {
   .th-action,
   .td-action,
   .cal-legend,
-  .cal-detail-card {
+  .cal-detail-card,
+  .cal-toolbar {
     display: none !important;
   }
 
@@ -259,10 +265,31 @@ h2 {
   .glass-panel {
     background: white !important;
     backdrop-filter: none !important;
-    border: 1px solid #ddd !important;
+    border: none !important;
     box-shadow: none !important;
   }
 
+  /* Fix cho CalendarView khi in */
+  .cal-wrapper {
+    height: 900px !important; /* Cố định chiều cao đủ lớn để không bị scroll */
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  .rbc-calendar {
+    height: 1000px !important;
+  }
+
+  .rbc-time-content {
+    overflow: visible !important;
+  }
+
+  .rbc-time-view, .rbc-month-view, .rbc-agenda-view {
+    background: transparent !important;
+    border: 1px solid #ccc !important;
+  }
+
+  /* Fix cho List/Table khi in */
   .schedule-table th {
     background-color: #f3f4f6 !important;
     color: #374151 !important;
