@@ -68,11 +68,11 @@ async def get_default_schedule():
     json_path = os.path.join(data_dir, "default.json")
     pdf_path = os.path.join(data_dir, "default.pdf")
 
-    if not os.path.exists(pdf_path):
+    if not os.path.exists(pdf_path) and not os.path.exists(json_path):
         raise HTTPException(status_code=404, detail="Không tìm thấy file mặc định.")
 
-    # Nếu đã có file JSON cache và nó mới hơn file PDF -> Đọc ngay lập tức
-    if os.path.exists(json_path) and os.path.getmtime(json_path) > os.path.getmtime(pdf_path):
+    # Luôn dùng cache JSON nếu có để tránh quá tải CPU trên Render
+    if os.path.exists(json_path):
         try:
             with open(json_path, "r", encoding="utf-8") as f:
                 return json.load(f)
