@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('phttps://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swa');
 
 :root {
   --bg-dark: #f8fafc;
@@ -52,7 +52,7 @@ body::before {
   transform: translate(-50%, -50%);
   width: 70vw;
   height: 70vh;
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/a/a1/Hanoi_University_of_Science_and_Technology_logo.png');
+  background-image: url('https://storage.googleapis.com/hust-files/2021-11-15/5807675312963584/background-new-page_.9m.jpeg');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
