@@ -35,9 +35,10 @@ const SHIFT_COLORS = {
 };
 
 function parseExamDateTime(examDate, examTime) {
-  const [day, month, year] = examDate.split('.');
+  if (!examDate || !examTime || examTime === '-' || examDate === '-') return null;
+  const [day, month, year] = String(examDate).split('.');
   if (!day || !month || !year) return null;
-  const time = examTime.replace('h', ':');
+  const time = String(examTime).replace('h', ':');
   const start = new Date(`${year}-${month}-${day}T${time.padStart(5, '0')}:00`);
   return isNaN(start.getTime()) ? null : start;
 }
@@ -132,6 +133,8 @@ const CalendarView = ({ schedule }) => {
     }, []);
   }, [schedule]);
 
+  const missingTimeCount = schedule?.length ? schedule.length - events.length : 0;
+
   // Set the default date to the earliest exam date only once when events are loaded
   React.useEffect(() => {
     if (events.length > 0) {
@@ -158,10 +161,16 @@ const CalendarView = ({ schedule }) => {
     setSelectedEvent(prev => prev?.id === event.id ? null : event);
   }, []);
 
-  if (events.length === 0) return null;
-
   return (
     <div className="calendar-container animate-fade-in delay-200">
+      {missingTimeCount > 0 && (
+        <div className="status-bar" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', marginBottom: '1rem', color: 'var(--warning)', justifyContent: 'center', textAlign: 'center' }}>
+          <span>
+            ⚠️ Có <strong>{missingTimeCount}</strong> môn học chưa có thời gian thi cụ thể (bị ẩn trên Lịch). Vui lòng xem ở tab <strong>Danh sách</strong>.
+          </span>
+        </div>
+      )}
+
       {selectedEvent && (
         <div className="cal-detail-card glass-panel">
           <div className="cal-detail-header">
