@@ -8,6 +8,10 @@ from schemas.schedule_schema import UploadResponse
 
 app = FastAPI(title="HUST Exam Schedule Generator")
 
+@app.get("/")
+def read_root():
+    return {"status": "ok", "message": "Backend is running"}
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
