@@ -31,7 +31,7 @@ Tạo môi trường ảo (Virtual Environment) và kích hoạt:
 python -m venv venv
 .\venv\Scripts\activate
 
-# Trên macOS/Linux
+# Trên macOS/Linux/WSL
 python3 -m venv venv
 source venv/bin/activate
 ```
@@ -66,4 +66,8 @@ npm run dev
 
 ---
 
-**Lưu ý**: Đảm bảo bạn chạy cả Backend và Frontend cùng lúc để ứng dụng có thể hoạt động hoàn chỉnh (Frontend gọi API tới Backend để upload và parse file PDF).
+### Lưu ý khi chạy trên WSL (Windows Subsystem for Linux)
+Nếu bạn đang sử dụng WSL để chạy dự án:
+1. **Lệnh Python**: Bạn sử dụng cú pháp `python3` và `source venv/bin/activate` thay vì cú pháp của Windows.
+2. **Truy cập từ trình duyệt Windows**: Mặc định Vite và FastAPI sẽ chạy ở `localhost` và Windows có thể truy cập thẳng vào `localhost:5173` hoặc `localhost:8000`. Tuy nhiên, nếu không truy cập được, bạn hãy chạy frontend bằng lệnh `npm run dev -- --host` để Vite mở cổng cho mạng ngoài.
+3. **Hiệu suất**: Nên clone dự án vào hệ thống file của Linux (ví dụ `/home/username/`) thay vì truy cập chéo sang ổ đĩa Windows (`/mnt/c/`) để `npm install` và quá trình build chạy nhanh nhất.

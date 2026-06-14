@@ -13,30 +13,37 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from typing import List
+
 @app.post("/api/upload", response_model=UploadResponse)
-async def upload_pdf(file: UploadFile = File(...)):
-    if not file.filename.endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Invalid file type. Please upload a PDF.")
+async def upload_pdf(files: List[UploadFile] = File(...)):
+    all_parsed_data = []
     
-    try:
-        content = await file.read()
-        parsed_data = parse_pdf_schedule(content)
+    for file in files:
+        if not file.filename.endswith(".pdf"):
+            raise HTTPException(status_code=400, detail=f"Invalid file type for {file.filename}. Please upload PDFs only.")
         
-        if not parsed_data:
-            raise HTTPException(status_code=400, detail="Could not parse the PDF. Please check the file format.")
-            
-        # Extract unique class codes
-        class_codes = list(set(item["classCode"] for item in parsed_data))
-        class_codes.sort()
+        try:
+            content = await file.read()
+            parsed_data = parse_pdf_schedule(content)
+            if parsed_data:
+                all_parsed_data.extend(parsed_data)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"An error occurred while parsing {file.filename}: {str(e)}")
+
+    if not all_parsed_data:
+        raise HTTPException(status_code=400, detail="Could not parse any data from the provided PDFs. Please check the file formats.")
         
-        return UploadResponse(
-            message="Parse file thành công",
-            totalRows=len(parsed_data),
-            classCodes=class_codes,
-            data=parsed_data
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred while parsing the PDF: {str(e)}")
+    # Extract unique class codes
+    class_codes = list(set(item["classCode"] for item in all_parsed_data))
+    class_codes.sort()
+    
+    return UploadResponse(
+        message="Parse file(s) thành công",
+        totalRows=len(all_parsed_data),
+        classCodes=class_codes,
+        data=all_parsed_data
+    )
 
 if __name__ == "__main__":
     import uvicorn

@@ -32,13 +32,18 @@ const UploadBox = ({ onUpload, isLoading, error }) => {
     }
   };
 
-  const handleFile = (file) => {
-    if (file.type !== "application/pdf") {
-      alert("Please upload a PDF file");
+  const handleFile = (fileOrFiles) => {
+    // If we receive an array (from drag/drop if implemented) or a single file
+    const files = Array.isArray(fileOrFiles) ? fileOrFiles : [fileOrFiles];
+    
+    // Check if any file is not a PDF
+    if (files.some(f => f.type !== "application/pdf")) {
+      alert("Please upload PDF files only.");
       return;
     }
-    setSelectedFile(file);
-    onUpload(file);
+    
+    // Send all files to parent
+    onUpload(files);
   };
 
   return (
@@ -54,6 +59,7 @@ const UploadBox = ({ onUpload, isLoading, error }) => {
           type="file" 
           id="file-upload" 
           accept=".pdf" 
+          multiple // allow multiple file selection
           onChange={handleChange} 
           className="file-input"
         />
