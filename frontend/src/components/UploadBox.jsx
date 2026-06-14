@@ -1,66 +1,59 @@
 import React, { useCallback, useState } from 'react';
-import { UploadCloud, File, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { UploadCloud, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import './UploadBox.css';
 
 const UploadBox = ({ onUpload, isLoading, error }) => {
   const [dragActive, setDragActive] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleDrag = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
+    setDragActive(e.type === "dragenter" || e.type === "dragover");
   }, []);
 
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
+
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    if (droppedFiles.length > 0) {
+      processFiles(droppedFiles);
     }
   }, []);
 
   const handleChange = (e) => {
     e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length > 0) {
+      processFiles(selectedFiles);
     }
   };
 
-  const handleFile = (fileOrFiles) => {
-    // If we receive an array (from drag/drop if implemented) or a single file
-    const files = Array.isArray(fileOrFiles) ? fileOrFiles : [fileOrFiles];
-    
-    // Check if any file is not a PDF
-    if (files.some(f => f.type !== "application/pdf")) {
-      alert("Please upload PDF files only.");
+  const processFiles = (files) => {
+    const invalidFiles = files.filter(f => f.type !== "application/pdf");
+    if (invalidFiles.length > 0) {
+      alert("Chỉ chấp nhận file PDF.");
       return;
     }
-    
-    // Send all files to parent
     onUpload(files);
   };
 
   return (
     <div className="upload-container animate-fade-in">
-      <div 
+      <div
         className={`upload-box ${dragActive ? 'drag-active' : ''}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
       >
-        <input 
-          type="file" 
-          id="file-upload" 
-          accept=".pdf" 
-          multiple // allow multiple file selection
-          onChange={handleChange} 
+        <input
+          type="file"
+          id="file-upload"
+          accept=".pdf"
+          multiple
+          onChange={handleChange}
           className="file-input"
         />
         <label htmlFor="file-upload" className="upload-label">
@@ -69,17 +62,11 @@ const UploadBox = ({ onUpload, isLoading, error }) => {
               <Loader className="icon spin" />
               <p>Đang phân tích PDF...</p>
             </div>
-          ) : selectedFile && !error ? (
-            <div className="upload-content success">
-              <CheckCircle className="icon" />
-              <p>{selectedFile.name}</p>
-              <span className="change-file">Bấm để đổi file khác</span>
-            </div>
           ) : (
             <div className="upload-content">
               <UploadCloud className="icon" />
               <p><strong>Bấm để tải lên</strong> hoặc kéo thả file PDF vào đây</p>
-              <span>Chỉ hỗ trợ file lịch thi dạng PDF</span>
+              <span>Hỗ trợ chọn nhiều file cùng lúc</span>
             </div>
           )}
         </label>

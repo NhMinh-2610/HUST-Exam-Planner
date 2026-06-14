@@ -13,14 +13,14 @@
   --warning: #f59e0b;
   --danger: #ef4444;
   --success: #10b981;
-  
+
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
-  
+
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
   --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.3);
-  
+
   --font-sans: 'Inter', sans-serif;
 }
 
@@ -37,26 +37,32 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-image: radial-gradient(circle at top right, rgba(139, 92, 246, 0.1), transparent 40%),
-                    radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.1), transparent 40%);
+  background-image:
+    radial-gradient(circle at top right, rgba(139, 92, 246, 0.1), transparent 40%),
+    radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.1), transparent 40%);
   background-attachment: fixed;
 }
 
-/* Animations */
+/* ───── Animations ───── */
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
+.spin { animation: spin 1s linear infinite; }
 
-/* Layout Utilities */
+/* ───── Layout ───── */
+
 .container {
   width: 100%;
   max-width: 1200px;
@@ -72,7 +78,41 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
-/* Buttons */
+/* ───── Typography ───── */
+
+.app-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ───── Buttons ───── */
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -123,31 +163,131 @@ body {
   border-color: var(--text-muted);
 }
 
-/* Typography */
-h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #fff, #a78bfa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 0.5rem;
-  text-align: center;
+.btn-danger-outline {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-.subtitle {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 1.1rem;
-  margin-bottom: 3rem;
+.btn-danger-outline:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--danger);
 }
 
-h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+/* ───── Status Bar ───── */
+
+.status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--bg-panel);
+  border-radius: var(--radius-md);
+}
+
+.status-success {
+  color: var(--success);
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin: 0;
 }
 
-/* Specific Component Styles will go here */
+.status-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* ───── View Toggle ───── */
+
+.view-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.view-toggle-left {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.export-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+/* ───── Print ───── */
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .app-header,
+  .status-bar,
+  .class-selector,
+  .resolver,
+  .view-toggle,
+  .upload-container,
+  .btn-remove,
+  .th-action,
+  .td-action,
+  .cal-legend,
+  .cal-detail-card {
+    display: none !important;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .glass-panel {
+    background: white !important;
+    backdrop-filter: none !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+
+  .schedule-table th {
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+  }
+
+  .schedule-table td {
+    color: #1f2937 !important;
+  }
+
+  .badge-primary {
+    background: #ede9fe !important;
+    color: #5b21b6 !important;
+  }
+
+  .schedule-title,
+  .schedule-count {
+    color: black !important;
+  }
+
+  .conflict-panel {
+    border: 2px solid #ef4444 !important;
+    background: #fef2f2 !important;
+  }
+
+  .conflict-title {
+    color: #dc2626 !important;
+  }
+}

@@ -19,7 +19,11 @@ const customStyles = {
     border: '1px solid var(--border)',
     borderRadius: 'var(--radius-md)',
     boxShadow: 'var(--shadow-lg)',
-    zIndex: 50
+    zIndex: 9999
+  }),
+  menuPortal: (provided) => ({
+    ...provided,
+    zIndex: 9999
   }),
   option: (provided, state) => ({
     ...provided,
@@ -83,7 +87,7 @@ const ClassSelector = ({ classCodes, selectedCodes, onChange }) => {
   };
 
   return (
-    <div className="class-selector animate-fade-in delay-100" style={{ marginBottom: '2rem' }}>
+    <div className="class-selector animate-fade-in delay-100" style={{ marginBottom: '2rem', position: 'relative', zIndex: 100 }}>
       <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-main)' }}>
         Chọn mã lớp của bạn
       </h2>
@@ -98,6 +102,8 @@ const ClassSelector = ({ classCodes, selectedCodes, onChange }) => {
         noOptionsMessage={() => "Không tìm thấy mã lớp"}
         className="react-select-container"
         classNamePrefix="react-select"
+        menuPortalTarget={document.body}
+        menuPosition={'fixed'}
       />
     </div>
   );

@@ -1,16 +1,17 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, BookOpen, AlertTriangle } from 'lucide-react';
+import { Calendar, Clock, MapPin, BookOpen, X } from 'lucide-react';
 import './ScheduleTable.css';
 
-const ScheduleTable = ({ schedule }) => {
-  if (!schedule || schedule.length === 0) {
-    return null;
-  }
+const ScheduleTable = ({ schedule, onRemoveClass }) => {
+  if (!schedule || schedule.length === 0) return null;
 
   return (
     <div className="schedule-container animate-fade-in delay-200">
-      <h2 className="schedule-title">Lịch thi của bạn</h2>
-      
+      <div className="schedule-header">
+        <h2 className="schedule-title">Lịch thi của bạn</h2>
+        <span className="schedule-count">{schedule.length} môn</span>
+      </div>
+
       <div className="table-responsive glass-panel">
         <table className="schedule-table">
           <thead>
@@ -23,6 +24,7 @@ const ScheduleTable = ({ schedule }) => {
               <th>Môn học</th>
               <th>Phòng</th>
               <th>Mã lớp thi</th>
+              <th className="th-action"></th>
             </tr>
           </thead>
           <tbody>
@@ -59,6 +61,15 @@ const ScheduleTable = ({ schedule }) => {
                 </td>
                 <td>
                   <span className="badge badge-outline">{item.examClassCode}</span>
+                </td>
+                <td className="td-action">
+                  <button
+                    className="btn-remove"
+                    title={`Bỏ chọn mã lớp ${item.classCode}`}
+                    onClick={() => onRemoveClass(item.classCode)}
+                  >
+                    <X size={16} />
+                  </button>
                 </td>
               </tr>
             ))}
