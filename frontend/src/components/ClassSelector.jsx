@@ -30,7 +30,7 @@ const customStyles = {
     backgroundColor: state.isSelected 
       ? 'var(--primary)' 
       : state.isFocused 
-        ? 'rgba(139, 92, 246, 0.1)' 
+        ? 'rgba(204, 0, 0, 0.1)' 
         : 'transparent',
     color: state.isSelected ? 'white' : 'var(--text-main)',
     cursor: 'pointer',
@@ -40,9 +40,9 @@ const customStyles = {
   }),
   multiValue: (provided) => ({
     ...provided,
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    backgroundColor: 'rgba(204, 0, 0, 0.15)',
     borderRadius: '4px',
-    border: '1px solid rgba(139, 92, 246, 0.3)'
+    border: '1px solid rgba(204, 0, 0, 0.25)'
   }),
   multiValueLabel: (provided) => ({
     ...provided,

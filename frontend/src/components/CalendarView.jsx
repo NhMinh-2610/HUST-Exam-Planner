@@ -27,11 +27,11 @@ const CALENDAR_MESSAGES = {
 };
 
 const SHIFT_COLORS = {
-  'Kíp 1': '#3b82f6',
-  'Kíp 2': '#8b5cf6',
-  'Kíp 3': '#ec4899',
-  'Kíp 4': '#f59e0b',
-  'Kíp 5': '#10b981',
+  'Kíp 1': '#d32f2f',
+  'Kíp 2': '#1976d2',
+  'Kíp 3': '#388e3c',
+  'Kíp 4': '#f57c00',
+  'Kíp 5': '#7b1fa2',
 };
 
 function parseExamDateTime(examDate, examTime) {
