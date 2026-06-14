@@ -47,16 +47,15 @@ body {
 body::before {
   content: "";
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 70vw;
-  height: 70vh;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background-image: url('https://storage.googleapis.com/hust-files/2021-11-15/5807675312963584/background-new-page_.9m.jpeg');
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: 0.05; /* Rất mờ để không cản trở nội dung */
+  opacity: 0.15; /* Tăng độ nét của ảnh nền */
   z-index: -1;
   pointer-events: none;
 }
