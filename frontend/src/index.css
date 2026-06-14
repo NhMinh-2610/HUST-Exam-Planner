@@ -284,9 +284,40 @@ h2 {
     overflow: visible !important;
   }
 
-  .rbc-time-view, .rbc-month-view, .rbc-agenda-view {
+  /* Làm đậm các đường kẻ khung (Grid) của Lịch */
+  .rbc-time-view, .rbc-month-view, .rbc-agenda-view,
+  .rbc-header, .rbc-time-header-content,
+  .rbc-time-content, .rbc-timeslot-group,
+  .rbc-day-slot .rbc-time-slot, .rbc-day-bg,
+  .rbc-month-row, .rbc-agenda-table tbody > tr > td, .rbc-agenda-table thead > tr > th {
+    border-color: #666 !important;
     background: transparent !important;
-    border: 1px solid #ccc !important;
+  }
+
+  /* Làm đậm chữ thời gian, ngày tháng */
+  .rbc-time-slot .rbc-label, .rbc-header, .rbc-date-cell {
+    color: #000 !important;
+    font-weight: bold !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Định dạng lại khối sự kiện (Môn thi) thành dạng viền để in sắc nét */
+  .rbc-event {
+    background-color: white !important;
+    border: 2px solid #000 !important;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+  
+  .cal-event-title {
+    font-weight: 700 !important;
+    font-size: 0.9em !important;
+    color: #000 !important;
+  }
+  
+  .cal-event-detail {
+    color: #333 !important;
+    font-weight: 500 !important;
   }
 
   /* Fix cho List/Table khi in */
