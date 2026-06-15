@@ -66,9 +66,13 @@ async def get_default_schedule():
     import os, json
     data_dir = os.path.join(os.path.dirname(__file__), "data")
     json_path = os.path.join(data_dir, "default.json")
-    pdf_path = os.path.join(data_dir, "default.pdf")
+    
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir, exist_ok=True)
+        
+    pdf_files = [f for f in os.listdir(data_dir) if f.endswith(".pdf")]
 
-    if not os.path.exists(pdf_path) and not os.path.exists(json_path):
+    if not pdf_files and not os.path.exists(json_path):
         raise HTTPException(status_code=404, detail="Không tìm thấy file mặc định.")
 
     # Luôn dùng cache JSON nếu có để tránh quá tải CPU trên Render
@@ -80,20 +84,26 @@ async def get_default_schedule():
             pass # Nếu lỗi đọc cache thì sẽ parse lại bên dưới
 
     try:
-        with open(pdf_path, "rb") as f:
-            content = f.read()
-        
-        parsed_data = parse_pdf_schedule(content)
-        if not parsed_data:
+        all_parsed_data = []
+        for pdf_file in pdf_files:
+            pdf_path = os.path.join(data_dir, pdf_file)
+            with open(pdf_path, "rb") as f:
+                content = f.read()
+            
+            parsed_data = parse_pdf_schedule(content)
+            if parsed_data:
+                all_parsed_data.extend(parsed_data)
+                
+        if not all_parsed_data:
             raise HTTPException(status_code=400, detail="Không trích xuất được dữ liệu từ file mặc định.")
             
-        class_codes = sorted(set(item["classCode"] for item in parsed_data))
+        class_codes = sorted(set(item["classCode"] for item in all_parsed_data))
         
         response_data = {
             "message": "Tải file mặc định thành công",
-            "totalRows": len(parsed_data),
+            "totalRows": len(all_parsed_data),
             "classCodes": class_codes,
-            "data": parsed_data,
+            "data": all_parsed_data,
         }
 
         # Lưu lại cache để lần sau mở là có liền
