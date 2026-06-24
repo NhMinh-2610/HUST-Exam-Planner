@@ -10,7 +10,7 @@ Thay vì phải căng mắt dò tìm mã lớp của mình trong file PDF lịch
 
 ## ✨ Tính năng nổi bật
 
-- **📄 Đọc PDF:** Ứng dụng tự động bóc tách dữ liệu chuẩn xác từ file PDF lịch thi do trường cung cấp (hỗ trợ xử lý trực tiếp trên server nếu server tốt).
+- **📄 Đọc PDF:** Ứng dụng tự động bóc tách dữ liệu chuẩn xác từ file PDF lịch thi do trường cung cấp.
 - **🎯 Tự động lọc môn thi cá nhân:** Nhập mã lớp, ứng dụng sẽ tìm và chỉ hiển thị đúng lịch thi của riêng bạn.
 - **🗓️ Hiển thị trực quan (Calendar & Table View):** 
   - Xem theo dạng **Bảng** chi tiết các môn thi.
@@ -23,7 +23,7 @@ Thay vì phải căng mắt dò tìm mã lớp của mình trong file PDF lịch
 
 ## 🚀 Công nghệ sử dụng
 
-Ứng dụng được chia làm 2 phần độc lập (Frontend và Backend) để đảm bảo tốc độ và khả năng xử lý file PDF tốt nhất.
+Ứng dụng được chia làm 2 phần độc lập (Frontend và Backend):
 
 **Frontend (Giao diện người dùng):**
 - **React.js** (Khởi tạo bằng Vite)
@@ -32,9 +32,10 @@ Thay vì phải căng mắt dò tìm mã lớp của mình trong file PDF lịch
 - **Lucide React** (Bộ Icon UI)
 - Trực tiếp chạy trên nền tảng Cloud của **Vercel**.
 
-**Backend (Xử lý PDF & API):**
+**Backend (API Server):**
 - **Python / FastAPI** (Xây dựng API tốc độ cao)
-- **pdfplumber / pandas** (Trích xuất văn bản có cấu trúc từ file PDF của nhà trường)
+- **pdfplumber** (Trích xuất văn bản có cấu trúc từ file PDF của nhà trường)
+- Dữ liệu lịch thi được **parse offline** thành file JSON bằng script `generate_cache.py`, backend chỉ đọc JSON khi chạy.
 - Trực tiếp chạy trên nền tảng Cloud của **Render**.
 
 ---
@@ -43,7 +44,7 @@ Thay vì phải căng mắt dò tìm mã lớp của mình trong file PDF lịch
 
 Nếu bạn muốn tải code về và tự chạy trên máy của mình:
 
-### 1. Khởi động Backend (Python)
+### 1. Cài đặt Backend (Python)
 ```bash
 cd backend
 python -m venv venv
@@ -53,13 +54,26 @@ venv\Scripts\activate
 
 # Cài đặt thư viện
 pip install -r requirements.txt
-
-# Chạy Server
-uvicorn main:app --reload
-# Backend sẽ chạy tại: http://localhost:10000
 ```
 
-### 2. Khởi động Frontend (React)
+### 2. Tạo dữ liệu lịch thi (Bắt buộc trước khi chạy Backend)
+
+Bỏ file PDF lịch thi vào thư mục `backend/data/`, sau đó chạy script để tạo file `default.json`:
+
+```bash
+python generate_cache.py
+```
+
+> **Lưu ý:** File PDF lớn (~1MB, hàng trăm trang) có thể mất 1-2 phút để xử lý.  
+> Mỗi khi **thêm, xóa hoặc cập nhật** file PDF, bạn cần **chạy lại** lệnh này.
+
+### 3. Khởi động Backend
+```bash
+uvicorn main:app --reload
+# Backend sẽ chạy tại: http://localhost:8000
+```
+
+### 4. Khởi động Frontend (React)
 Mở một cửa sổ Terminal mới:
 ```bash
 cd frontend
@@ -70,6 +84,26 @@ npm install
 # Chạy Web
 npm run dev
 # Frontend sẽ chạy tại: http://localhost:5173
+```
+
+---
+
+## 📁 Cấu trúc thư mục chính
+
+```
+HUST-Exam-Planner/
+├── backend/
+│   ├── data/                  # Thư mục chứa file PDF & default.json
+│   │   ├── *.pdf              # File PDF lịch thi (đầu vào)
+│   │   └── default.json       # Dữ liệu đã parse (đầu ra)
+│   ├── services/
+│   │   └── pdf_parser.py      # Logic bóc tách dữ liệu từ PDF
+│   ├── schemas/
+│   │   └── schedule_schema.py # Schema dữ liệu API
+│   ├── generate_cache.py      # Script tạo default.json từ PDF
+│   ├── main.py                # FastAPI server
+│   └── requirements.txt
+└── frontend/                  # React app (Vite)
 ```
 
 ---

@@ -64,62 +64,21 @@ async def upload_pdf(files: List[UploadFile] = File(...)):
 @app.get("/api/default-schedule", response_model=UploadResponse)
 async def get_default_schedule():
     import os, json
-    data_dir = os.path.join(os.path.dirname(__file__), "data")
-    json_path = os.path.join(data_dir, "default.json")
-    
-    if not os.path.exists(data_dir):
-        os.makedirs(data_dir, exist_ok=True)
-        
-    pdf_files = [f for f in os.listdir(data_dir) if f.endswith(".pdf")]
+    json_path = os.path.join(os.path.dirname(__file__), "data", "default.json")
 
-    if not pdf_files and not os.path.exists(json_path):
-        raise HTTPException(status_code=404, detail="Không tìm thấy file mặc định.")
-
-    # Luôn dùng cache JSON nếu có để tránh quá tải CPU trên Render
-    if os.path.exists(json_path):
-        try:
-            with open(json_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            pass # Nếu lỗi đọc cache thì sẽ parse lại bên dưới
+    if not os.path.exists(json_path):
+        raise HTTPException(
+            status_code=404,
+            detail="Chưa có file default.json. Hãy chạy 'python generate_cache.py' trước.",
+        )
 
     try:
-        all_parsed_data = []
-        for pdf_file in pdf_files:
-            pdf_path = os.path.join(data_dir, pdf_file)
-            with open(pdf_path, "rb") as f:
-                content = f.read()
-            
-            parsed_data = parse_pdf_schedule(content)
-            if parsed_data:
-                all_parsed_data.extend(parsed_data)
-                
-        if not all_parsed_data:
-            raise HTTPException(status_code=400, detail="Không trích xuất được dữ liệu từ file mặc định.")
-            
-        class_codes = sorted(set(item["classCode"] for item in all_parsed_data))
-        
-        response_data = {
-            "message": "Tải file mặc định thành công",
-            "totalRows": len(all_parsed_data),
-            "classCodes": class_codes,
-            "data": all_parsed_data,
-        }
-
-        # Lưu lại cache để lần sau mở là có liền
-        try:
-            with open(json_path, "w", encoding="utf-8") as f:
-                json.dump(response_data, f, ensure_ascii=False)
-        except Exception:
-            pass
-
-        return response_data
-    except HTTPException:
-        raise
+        with open(json_path, "r", encoding="utf-8") as f:
+            return json.load(f)
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Lỗi khi xử lý file mặc định: {str(e)}",
+            detail=f"Lỗi khi đọc default.json: {str(e)}",
         )
 
 
