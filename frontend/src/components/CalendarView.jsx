@@ -34,13 +34,29 @@ const SHIFT_COLORS = {
   'Kíp 5': '#7b1fa2',
 };
 
-function parseExamDateTime(examDate, examTime) {
-  if (!examDate || !examTime || examTime === '-' || examDate === '-') return null;
+function parseExamDate(examDate) {
+  if (!examDate || examDate === '-') return null;
   const [day, month, year] = String(examDate).split('.');
   if (!day || !month || !year) return null;
-  const time = String(examTime).replace('h', ':');
-  const start = new Date(`${year}-${month}-${day}T${time.padStart(5, '0')}:00`);
-  return isNaN(start.getTime()) ? null : start;
+  return { day, month, year };
+}
+
+function parseExamDateTime(examDate, examTime) {
+  const dateParts = parseExamDate(examDate);
+  if (!dateParts) return { start: null, missingTime: false };
+
+  const { day, month, year } = dateParts;
+  const hasTime = examTime && examTime !== '-' && examTime.trim() !== '';
+
+  if (hasTime) {
+    const time = String(examTime).replace('h', ':');
+    const start = new Date(`${year}-${month}-${day}T${time.padStart(5, '0')}:00`);
+    return isNaN(start.getTime()) ? { start: null, missingTime: false } : { start, missingTime: false };
+  }
+
+  // Chưa có giờ thi → đặt cuối ngày (19:00)
+  const start = new Date(`${year}-${month}-${day}T19:00:00`);
+  return isNaN(start.getTime()) ? { start: null, missingTime: true } : { start, missingTime: true };
 }
 
 const CustomToolbar = (toolbar) => {
@@ -104,9 +120,16 @@ const CustomToolbar = (toolbar) => {
 };
 
 const EventComponent = ({ event }) => (
-  <div className="cal-event-content" title={`${event.resource.courseName}\n${event.resource.examTime} — ${event.resource.room}\nMã lớp: ${event.resource.classCode}\nMã lớp thi: ${event.resource.examClassCode}`}>
-    <span className="cal-event-title">{event.resource.courseName}</span>
-    <span className="cal-event-detail">{event.resource.room} · {event.resource.examTime}</span>
+  <div className="cal-event-content" title={`${event.resource.courseName}\n${event.resource.missingTime ? 'Chưa có giờ thi cụ thể' : `${event.resource.examTime} — ${event.resource.room}`}\nMã lớp: ${event.resource.classCode}\nMã lớp thi: ${event.resource.examClassCode}`}>
+    <span className="cal-event-title">
+      {event.resource.missingTime && '⚠️ '}{event.resource.courseName}
+    </span>
+    <span className="cal-event-detail">
+      {event.resource.missingTime
+        ? 'Chưa có giờ thi'
+        : `${event.resource.room} · ${event.resource.examTime}`
+      }
+    </span>
   </div>
 );
 
@@ -119,21 +142,21 @@ const CalendarView = ({ schedule }) => {
     if (!schedule?.length) return [];
 
     return schedule.reduce((acc, item) => {
-      const start = parseExamDateTime(item.examDate, item.examTime);
+      const { start, missingTime } = parseExamDateTime(item.examDate, item.examTime);
       if (!start) return acc;
 
       acc.push({
         id: `${item.classCode}-${item.examClassCode}`,
         title: item.courseName,
         start,
-        end: new Date(start.getTime() + EXAM_DURATION_MS),
-        resource: item,
+        end: new Date(start.getTime() + (missingTime ? 60 * 60 * 1000 : EXAM_DURATION_MS)),
+        resource: { ...item, missingTime },
       });
       return acc;
     }, []);
   }, [schedule]);
 
-  const missingTimeCount = schedule?.length ? schedule.length - events.length : 0;
+  const missingTimeCount = events.filter(e => e.resource.missingTime).length;
 
   // Set the default date to the earliest exam date only once when events are loaded
   React.useEffect(() => {
@@ -144,6 +167,19 @@ const CalendarView = ({ schedule }) => {
   }, [events]);
 
   const eventStyleGetter = useCallback((event) => {
+    if (event.resource.missingTime) {
+      return {
+        style: {
+          backgroundColor: '#78716c',
+          border: '2px dashed #f59e0b',
+          borderRadius: '6px',
+          padding: '2px 6px',
+          fontSize: '0.8em',
+          opacity: 0.85,
+          boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
+        },
+      };
+    }
     const bg = SHIFT_COLORS[event.resource.examShift] || '#8b5cf6';
     return {
       style: {
@@ -166,7 +202,7 @@ const CalendarView = ({ schedule }) => {
       {missingTimeCount > 0 && (
         <div className="status-bar" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', marginBottom: '1rem', color: 'var(--warning)', justifyContent: 'center', textAlign: 'center' }}>
           <span>
-            ⚠️ Có <strong>{missingTimeCount}</strong> môn học chưa có thời gian thi cụ thể (bị ẩn trên Lịch). Vui lòng xem ở tab <strong>Danh sách</strong>.
+            ⚠️ Có <strong>{missingTimeCount}</strong> môn học chưa có giờ thi cụ thể — được xếp tạm ở cuối ngày (19:00) với viền vàng.
           </span>
         </div>
       )}
@@ -230,7 +266,7 @@ const CalendarView = ({ schedule }) => {
           eventPropGetter={eventStyleGetter}
           onSelectEvent={handleSelectEvent}
           min={new Date(2026, 0, 1, 6, 0)}
-          max={new Date(2026, 0, 1, 20, 0)}
+          max={new Date(2026, 0, 1, 21, 0)}
           step={30}
           timeslots={2}
           popup
