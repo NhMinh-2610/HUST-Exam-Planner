@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { RefreshCw, FilePlus, Calendar as CalendarIcon, List as ListIcon, Download, Printer, BookOpen } from 'lucide-react';
+import { RefreshCw, FilePlus, Calendar as CalendarIcon, List as ListIcon, Download, Printer, BookOpen, Image as ImageIcon, X } from 'lucide-react';
+import html2canvas from 'html2canvas';
 import UploadBox from './components/UploadBox';
 import ClassSelector from './components/ClassSelector';
 import ScheduleTable from './components/ScheduleTable';
@@ -52,6 +53,8 @@ function App() {
   });
   const [viewMode, setViewMode] = useState('table');
   const [isInitializing, setIsInitializing] = useState(true);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [isExportingImage, setIsExportingImage] = useState(false);
 
   useEffect(() => {
     const loadDefault = async () => {
@@ -188,6 +191,38 @@ function App() {
     setResolvedConflicts(prev => ({ ...prev, [classCode]: examClassCode }));
   };
 
+  const handleExportImage = async () => {
+    const element = document.getElementById('schedule-capture-area');
+    if (!element) return;
+    
+    setIsExportingImage(true);
+    try {
+      // Adding a brief timeout to ensure any re-renders are complete
+      await new Promise(resolve => setTimeout(resolve, 100));
+      const canvas = await html2canvas(element, {
+        scale: 2, // Higher quality
+        useCORS: true,
+        backgroundColor: '#ffffff', // Ensure white background
+      });
+      const imgData = canvas.toDataURL('image/png');
+      setPreviewImage(imgData);
+    } catch (err) {
+      console.error("Lỗi xuất ảnh:", err);
+      // You could set an error state here if needed
+    } finally {
+      setIsExportingImage(false);
+    }
+  };
+
+  const downloadPreviewImage = () => {
+    if (!previewImage) return;
+    const link = document.createElement('a');
+    link.href = previewImage;
+    link.download = `lich-thi-${viewMode === 'table' ? 'bang' : 'lich'}.png`;
+    link.click();
+    setPreviewImage(null);
+  };
+
   return (
     <div className="container">
       <header className="app-header animate-fade-in">
@@ -282,6 +317,10 @@ function App() {
 
                   {schedule.length > 0 && (
                     <div className="export-actions">
+                      <button className="btn btn-secondary btn-sm" onClick={handleExportImage} disabled={isExportingImage}>
+                        {isExportingImage ? <RefreshCw className="spin" size={16} /> : <ImageIcon size={16} />}
+                        Xuất ảnh
+                      </button>
                       <button className="btn btn-secondary btn-sm" onClick={() => exportCSV(schedule)}>
                         <Download size={16} /> Xuất CSV
                       </button>
@@ -292,16 +331,43 @@ function App() {
                   )}
                 </div>
 
-                {viewMode === 'table' ? (
-                  <ScheduleTable schedule={schedule} onRemoveClass={handleRemoveClass} />
-                ) : (
-                  <CalendarView schedule={schedule} />
-                )}
+                <div id="schedule-capture-area" style={{ padding: '10px', backgroundColor: 'var(--bg-primary)' }}>
+                  {viewMode === 'table' ? (
+                    <ScheduleTable schedule={schedule} onRemoveClass={handleRemoveClass} />
+                  ) : (
+                    <CalendarView schedule={schedule} />
+                  )}
+                </div>
               </div>
             )}
           </div>
         )}
       </main>
+
+      {/* Image Preview Modal */}
+      {previewImage && (
+        <div className="modal-overlay animate-fade-in">
+          <div className="modal-content preview-modal glass-panel">
+            <div className="modal-header">
+              <h3>Xem trước Ảnh Lịch Thi</h3>
+              <button className="btn-icon" onClick={() => setPreviewImage(null)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body preview-body">
+              <img src={previewImage} alt="Preview Schedule" className="preview-img" />
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={() => setPreviewImage(null)}>
+                Hủy
+              </button>
+              <button className="btn btn-primary" onClick={downloadPreviewImage}>
+                <Download size={16} style={{ marginRight: '8px' }} /> Tải xuống
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
