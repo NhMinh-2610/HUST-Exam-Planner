@@ -42,8 +42,14 @@ function App() {
   const [fileData, setFileData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedCodes, setSelectedCodes] = useState([]);
-  const [resolvedConflicts, setResolvedConflicts] = useState({});
+  const [selectedCodes, setSelectedCodes] = useState(() => {
+    const saved = localStorage.getItem('hust_exam_selected_codes');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [resolvedConflicts, setResolvedConflicts] = useState(() => {
+    const saved = localStorage.getItem('hust_exam_resolved_conflicts');
+    return saved ? JSON.parse(saved) : {};
+  });
   const [viewMode, setViewMode] = useState('table');
   const [isInitializing, setIsInitializing] = useState(true);
 
@@ -60,6 +66,14 @@ function App() {
     };
     loadDefault();
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('hust_exam_selected_codes', JSON.stringify(selectedCodes));
+  }, [selectedCodes]);
+
+  useEffect(() => {
+    localStorage.setItem('hust_exam_resolved_conflicts', JSON.stringify(resolvedConflicts));
+  }, [resolvedConflicts]);
 
   const handleUpload = async (files) => {
     setIsLoading(true);
@@ -91,6 +105,8 @@ function App() {
     setSelectedCodes([]);
     setResolvedConflicts({});
     setError(null);
+    localStorage.removeItem('hust_exam_selected_codes');
+    localStorage.removeItem('hust_exam_resolved_conflicts');
   };
 
   const handleRemoveClass = useCallback((classCode) => {
